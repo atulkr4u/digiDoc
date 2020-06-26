@@ -11,7 +11,7 @@ function App() {
     const fetchData = async () => {
       const db = firebase.firestore();
       const data = await db.collection("spells").get();
-      setSpells(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+      setSpells(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     fetchData();
   }, []);
@@ -22,18 +22,29 @@ function App() {
   };
 
   return (
-    <ul>
-      <input
-        value={newSpellName}
-        onChange={e => setNewSpellName(e.target.value)}
-      />
-      <button onClick={onCreate}>Creat</button>
-      {spells.map(spell => (
+    <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Spell Name</label>
+        <input
+          value={newSpellName}
+          onChange={(e) => setNewSpellName(e.target.value)}
+        />
+        <small id="emailHelp" class="form-text text-muted">
+          We'll never share your email with anyone else.
+        </small>
+      </div>
+      <div class="form-group">
+        <button onClick={onCreate} class="btn btn-primary">
+          Create
+        </button>
+      </div>
+
+      {spells.map((spell) => (
         <li key={spell.name}>
           <SpellInput spell={spell} />
         </li>
       ))}
-    </ul>
+    </form>
   );
 }
 
