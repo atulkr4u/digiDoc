@@ -1,50 +1,83 @@
 import React from "react";
-import "./App.css";
-import firebase from "./firebase";
-import { SpellInput } from "./SpellInput";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import Home from "./Pages/Home";
+import Help from "./Pages/Help";
+import About from "./Pages/About";
+
+export const AppContext = React.createContext();
 
 function App() {
-  const [spells, setSpells] = React.useState([]);
-  const [newSpellName, setNewSpellName] = React.useState();
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const db = firebase.firestore();
-      const data = await db.collection("spells").get();
-      setSpells(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    fetchData();
-  }, []);
-
-  const onCreate = () => {
-    const db = firebase.firestore();
-    db.collection("spells").add({ name: newSpellName });
-  };
-
   return (
-    <form>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Spell Name</label>
-        <input
-          value={newSpellName}
-          onChange={(e) => setNewSpellName(e.target.value)}
-        />
-        <small id="emailHelp" class="form-text text-muted">
-          We'll never share your email with anyone else.
-        </small>
-      </div>
-      <div class="form-group">
-        <button onClick={onCreate} class="btn btn-primary">
-          Create
-        </button>
-      </div>
+    <React.Fragment>
+      <AppContext.Provider
+        value={{
+          UserId: 124,
+          UserName: "Atul Rastogi",
+          EmployeeId: "PW01202",
+        }}
+      >
+        <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+          <a className="navbar-brand" href="#">
+            BMS 2.0
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-      {spells.map((spell) => (
-        <li key={spell.name}>
-          <SpellInput spell={spell} />
-        </li>
-      ))}
-    </form>
+          <div className="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item active">
+                <a className="nav-link" href="/">
+                  Home
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/help/999">
+                  About
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/help/999">
+                  Help
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <main role="main" className="container">
+          <br />
+          <br />
+          <br />
+
+          {/* Extend with help https://reacttraining.com/react-router/web/example/basic */}
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/About">
+                <About />
+              </Route>
+              {/* <Route exact path="/OneLead/:LeadId">
+                <OneLead />
+              </Route> */}
+              <Route path="/help/:lead">
+                <Help />
+              </Route>
+            </Switch>
+          </Router>
+        </main>
+      </AppContext.Provider>
+    </React.Fragment>
   );
 }
 
